@@ -4,6 +4,7 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 from gi.repository import Gdk
 
+ret_regions = []
 
 class RegionWindow(Gtk.ApplicationWindow):
   rectangle_start = (0,0)
@@ -48,10 +49,11 @@ class RegionWindow(Gtk.ApplicationWindow):
     # show
     self.add(self.box)
     self.show_all()
-  
+
   def return_area(self):
-    self.hide()
-    return self.rectangle_start, self.rectangle_end
+    global ret_regions
+    ret_regions = [ self.rectangle_start, self.rectangle_end ]
+    self.close()
   
   def key_press(self, widget, context):
     (_, key) = context.get_keycode()
@@ -91,6 +93,8 @@ class RegionSelector(Gtk.Application):
 
   def do_activate(self):
     RegionWindow(self)
-
-app = RegionSelector()
-app.run()
+  
+def get_region():
+  app = RegionSelector()
+  app.run()
+  return ret_regions
