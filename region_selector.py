@@ -29,6 +29,7 @@ class RegionWindow(Gtk.ApplicationWindow):
     self.connect("button-press-event", self.mouse_press)
     self.connect("button-release-event", self.mouse_release)
     self.connect("motion-notify-event", self.motion_notify)
+    self.connect("key-press-event", self.key_press)
 
     # size/color
     #display = Gdk.Display.get_default()
@@ -47,6 +48,15 @@ class RegionWindow(Gtk.ApplicationWindow):
     # show
     self.add(self.box)
     self.show_all()
+  
+  def return_area(self):
+    self.hide()
+    return self.rectangle_start, self.rectangle_end
+  
+  def key_press(self, widget, context):
+    (_, key) = context.get_keycode()
+    if key == 36:
+      self.return_area()
   
   def motion_notify(self, widget, context):
     self.rectangle_end = (context.x, context.y)
@@ -69,7 +79,6 @@ class RegionWindow(Gtk.ApplicationWindow):
     context.paint()
     context.set_operator(cairo.OPERATOR_OVER)
 
-    print((self.rectangle_start[0], self.rectangle_start[1], self.rectangle_end[0], self.rectangle_end[1]))
     context.set_line_width(1)
     context.set_source_rgb(1.0, 1.0, 1.0)
     context.rectangle(self.rectangle_start[0], self.rectangle_start[1], self.rectangle_end[0] - self.rectangle_start[0], self.rectangle_end[1] - self.rectangle_start[1])
