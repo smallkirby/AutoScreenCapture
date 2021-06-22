@@ -1,4 +1,4 @@
-# AutoScreenCapture
+..# AutoScreenCapture
 AutoScreenCapture is a cross-platform program that automatically takes screenshots for you. 
 
 ## 📸 Feature
@@ -14,6 +14,13 @@ AutoScreenCapture is a cross-platform program that automatically takes screensho
 <td><img src="https://user-images.githubusercontent.com/38023004/122553849-2b3a7580-d073-11eb-84dc-cfc9964e9bce.png"></td>
 </tr>
 </table>
+
+<br>
+<b> NOTE: region selection</b>  
+
+<img src="./img/region_selection.gif">
+The results are like <code>./img/sct-4.jpg</code> and <code>./img/sct-5.jpg</code>.
+
 
 ## 📸 Setup
 [Install Pipenv](https://pipenv.pypa.io/en/latest/install/) and then
