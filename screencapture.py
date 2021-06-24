@@ -84,6 +84,7 @@ def draw_timestamp_all(directory):
 def convert2pdf(directory, name):
     fpictures = list(map(lambda f: os.path.join(directory, f), os.listdir(directory)))
     fpictures = list(filter(lambda f: f.endswith(".jpg"), fpictures))
+    fpictures = list(sorted(fpictures, key=lambda f: int(f.split("sct-")[1].split(".jpg")[0])))
     with open(os.path.join(directory, name), "wb") as f:
         f.write(img2pdf.convert(fpictures))
 
