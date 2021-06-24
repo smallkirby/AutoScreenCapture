@@ -2,13 +2,14 @@ import cairo
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
-from gi.repository import Gdk
 
 ret_regions = []
+used_display = 0
 
 class RegionWindow(Gtk.ApplicationWindow):
   rectangle_start = (0,0)
   rectangle_end= (0,0)
+  monitor_geo = (0,0)
 
   def __init__(self, app):
     # instantiate
@@ -33,17 +34,16 @@ class RegionWindow(Gtk.ApplicationWindow):
     self.connect("key-press-event", self.key_press)
 
     # size/color
-    #display = Gdk.Display.get_default()
-    #screen = display.get_screen(0) # XXX
     screen = self.get_screen()
+    monitor = screen.get_monitor_geometry(used_display)
     visual = screen.get_rgba_visual()
     if visual and screen.is_composited():
       self.set_visual(visual)
 
-    width = screen.width()
-    height = screen.height()
-    self.move(0,0)
-    #self.resize(width, height)
+    geo_x = monitor.x
+    geo_y = monitor.y
+    self.monitor_geo = (geo_x, geo_y)
+    self.move(geo_x, geo_y)
     self.fullscreen()
 
     # show
@@ -52,7 +52,10 @@ class RegionWindow(Gtk.ApplicationWindow):
 
   def return_area(self):
     global ret_regions
-    ret_regions = [ self.rectangle_start, self.rectangle_end ]
+    ret_regions = [ 
+      (self.rectangle_start[0] + self.monitor_geo[0], self.rectangle_start[1] + self.monitor_geo[1]),
+      (self.rectangle_end[0] + self.monitor_geo[0], self.rectangle_end[1] + self.monitor_geo[1]) 
+      ]
     self.close()
   
   def key_press(self, widget, context):
@@ -94,7 +97,9 @@ class RegionSelector(Gtk.Application):
   def do_activate(self):
     RegionWindow(self)
   
-def get_region():
+def get_region(monitor):
+  global used_display
+  used_display = monitor
   app = RegionSelector()
   app.run()
   return ret_regions

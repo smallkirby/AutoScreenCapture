@@ -130,7 +130,7 @@ def main():
 
     # select region
     if region_selection:
-        region = region_selector.get_region()
+        region = region_selector.get_region(display)
         time.sleep(0.5) # delay
     else:
         region = None
