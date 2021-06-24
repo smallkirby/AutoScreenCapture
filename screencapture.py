@@ -35,7 +35,6 @@ def get_screenshot_image(display, region = None):
             width = region[1][0] - region[0][0]
             height = region[1][1] - region[0][1]
             monitor = {"top": int(top), "left": int(left), "width": int(width), "height": int(height)}
-            print(monitor)
             sct_img = sct.grab(monitor)
         img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
         return img
@@ -90,19 +89,19 @@ def convert2pdf(directory, name):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("directory", 
+    parser.add_argument("directory",
         help="Directory where screenshots will be saved.")
     parser.add_argument("-i", "--interval", type=int, help="Time interval for taking a screenshot. default=4", default=4)
-    parser.add_argument("-t", "--timeout", type=int, 
+    parser.add_argument("-t", "--timeout", type=int,
         help="Time to keep taking screenshots (minutes). default=120", default=120)
     parser.add_argument("-s", "--similarity_tolerance", type=int,
-        help="Maximum value of the Hamming distance at which two screenshots are considered to be similar. The larger this value is, the more likely it is that the same page of slides will be saved multiple times. default=5", 
+        help="Maximum value of the Hamming distance at which two screenshots are considered to be similar. The larger this value is, the more likely it is that the same page of slides will be saved multiple times. default=5",
         default=5)
     parser.add_argument("-d", "--display", type=int,
         help="Display where the screenshot will be taken. 1 is main, 2 secondary, etc. default=1",
-        default=1)
+        default=0)
     parser.add_argument("-m", "--movie_interval", type=int,
-        help="(beta) Time interval to save the video. For example, 1 if it is the same as the interval of time to take a screenshot, and 2 if it is twice as long. This option is still in beta, so it may not work properly for you. default=1", 
+        help="(beta) Time interval to save the video. For example, 1 if it is the same as the interval of time to take a screenshot, and 2 if it is twice as long. This option is still in beta, so it may not work properly for you. default=1",
         default=1)
     parser.add_argument("-r", "--region-selection", action="store_true",
         help="(beta) select screen region to record.")
@@ -182,7 +181,7 @@ def main():
             elapsed_time_minute = int(elapsed_time_second/60)
             print(f"progress: {elapsed_time_minute}/{timeout_minute}")
         time.sleep(interval)
-    
+
 
 if __name__ == "__main__":
     main()
