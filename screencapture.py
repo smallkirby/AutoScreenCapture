@@ -1,6 +1,10 @@
 import subprocess
 import time
-from PIL import Image
+import signal
+import sys
+import os
+import datetime
+from PIL import Image, ImageDraw, ImageFont
 import imagehash
 import argparse
 import mss
@@ -58,6 +62,24 @@ def increment_value_with_reset(value, threshold):
         value = 0
     return value
 
+def draw_timestamp(picture, timestr):
+    draw = ImageDraw.Draw(picture)
+    font = ImageFont.truetype("Ubuntu-C.ttf", 30)
+    draw.text((10,10), timestr, fill=(0,0,0), font=font)
+    return picture
+
+def draw_timestamp_all(directory):
+    fpictures = list(map(lambda f: os.path.join(directory, f), os.listdir(directory)))
+    fpictures = list(filter(lambda f: f.endswith(".jpg"), fpictures))
+    for fpicture in fpictures:
+        picture = pathlib.Path(fpicture)
+        timestamp = datetime.datetime.fromtimestamp(picture.stat().st_ctime)
+        image = Image.open(fpicture)
+        new_image = draw_timestamp(image, timestamp.strftime("%Y/%m/%d %H:%M:%S"))
+        new_image.save(fpicture, "JPEG")
+        old_time = time.mktime(timestamp.timetuple())
+        os.utime(fpicture, (old_time, old_time))
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -77,6 +99,8 @@ def main():
         default=1)
     parser.add_argument("-r", "--region-selection", action="store_true",
         help="(beta) select screen region to record.")
+    parser.add_argument("-S", "--stamp-time", action="store_true",
+        help="(beta) Stamp timestamp on captured images.")
 
     args = parser.parse_args()
 
@@ -87,19 +111,30 @@ def main():
     display = args.display
     movie_interval = args.movie_interval
     region_selection = args.region_selection
+    stamp_time = args.stamp_time
 
     subprocess.run(["mkdir", "-p", directory])
 
     print("Directory:", directory)
     print(f"progress: 0/{timeout_minute}")
 
-    ###
+    # select region
     if region_selection:
         region = region_selector.get_region()
     else:
         region = None
-    ###
 
+    # set signal handler
+    def finalize(sig, frame):
+        if stamp_time:
+            print("\nFinalizing results...")
+            draw_timestamp_all(directory)
+        print("\nThank you for using me :)")
+        sys.exit(0)
+    signal.signal(signal.SIGINT, finalize)
+    signal.signal(signal.SIGTERM, finalize)
+
+    # start captures
     start_time = time.time()
     elapsed_time_second = 0
     elapsed_time_minute = 0
