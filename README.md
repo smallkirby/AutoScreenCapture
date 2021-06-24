@@ -35,6 +35,13 @@ Easy to read when the capture is recorded.
 <img src="./img/sct-3.jpg">
 
 
+  
+<br>
+<b> NOTE3: PDF convertion</b>  
+
+Captured images can be converted to PDF format, which makes it easy to grasp the whole pictures.
+
+
 ## 📸 Setup
 [Install Pipenv](https://pipenv.pypa.io/en/latest/install/) and then
 ```
