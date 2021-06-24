@@ -72,7 +72,6 @@ def draw_timestamp_all(directory):
     fpictures = list(map(lambda f: os.path.join(directory, f), os.listdir(directory)))
     fpictures = list(filter(lambda f: f.endswith(".jpg"), fpictures))
     for fpicture in fpictures:
-        print(fpicture)
         picture = pathlib.Path(fpicture)
         timestamp = datetime.datetime.fromtimestamp(picture.stat().st_ctime)
         image = Image.open(fpicture)

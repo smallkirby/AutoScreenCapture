@@ -1,4 +1,9 @@
-..# AutoScreenCapture
+Forked from [rita-rita-ritan's repository](https://github.com/rita-rita-ritan/AutoScreenCapture).  
+Original one is designed in multi-platform way, but this repo is dedicated to Ubuntu-use, only for me.
+  
+
+
+# AutoScreenCapture
 AutoScreenCapture is a cross-platform program that automatically takes screenshots for you. 
 
 ## 📸 Feature
@@ -16,10 +21,18 @@ AutoScreenCapture is a cross-platform program that automatically takes screensho
 </table>
 
 <br>
-<b> NOTE: region selection</b>  
+<b> NOTE1: region selection</b>  
 
 <img src="./img/region_selection.gif">
-The results are like <code>./img/sct-4.jpg</code> and <code>./img/sct-5.jpg</code>.
+The results are like <code>./img/sct-4.jpg</code> and <code>./img/sct-5.jpg</code>.<br>
+
+
+  
+<br>
+<b> NOTE2: timestamp drawing</b>  
+
+Easy to read when the capture is recorded.
+<img src="./img/sct-3.jpg">
 
 
 ## 📸 Setup
