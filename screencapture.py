@@ -9,6 +9,7 @@ import imagehash
 import argparse
 import mss
 import pathlib
+import img2pdf
 from gooey import Gooey, GooeyParser
 
 import region_selector
@@ -80,6 +81,12 @@ def draw_timestamp_all(directory):
         old_time = time.mktime(timestamp.timetuple())
         os.utime(fpicture, (old_time, old_time))
 
+def convert2pdf(directory, name):
+    fpictures = list(map(lambda f: os.path.join(directory, f), os.listdir(directory)))
+    fpictures = list(filter(lambda f: f.endswith(".jpg"), fpictures))
+    fpictures = list(sorted(fpictures, key=lambda f: int(f.split("sct-")[1].split(".jpg")[0])))
+    with open(os.path.join(directory, name), "wb") as f:
+        f.write(img2pdf.convert(fpictures))
 
 def main():
     parser = argparse.ArgumentParser()
@@ -101,6 +108,8 @@ def main():
         help="(beta) select screen region to record.")
     parser.add_argument("-S", "--stamp-time", action="store_true",
         help="(beta) Stamp timestamp on captured images.")
+    parser.add_argument("-P", "--pdf", type=str, default="",
+        help="(beta) Convert captured images to PDF.")
 
     args = parser.parse_args()
 
@@ -112,6 +121,7 @@ def main():
     movie_interval = args.movie_interval
     region_selection = args.region_selection
     stamp_time = args.stamp_time
+    pdf_name = args.pdf
 
     subprocess.run(["mkdir", "-p", directory])
 
@@ -121,14 +131,19 @@ def main():
     # select region
     if region_selection:
         region = region_selector.get_region()
+        time.sleep(0.5) # delay
     else:
         region = None
 
     # set signal handler
     def finalize(sig, frame):
+        print("\nFinalizing results...")
         if stamp_time:
-            print("\nFinalizing results...")
+            print("Drawing timestamp.")
             draw_timestamp_all(directory)
+        if pdf_name != "":
+            print(f"Converting to PDF: {pdf_name}")
+            convert2pdf(directory, pdf_name)
         print("\nThank you for using me :)")
         sys.exit(0)
     signal.signal(signal.SIGINT, finalize)
